@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <input v-model.trim="message" type="text">
+    <input v-model.number="number" type="number">
+    <select v-model="select">
+      <option value="1">꼬부기</option>
+      <option value="2">이상해씨</option>
+      <option value="3">파이리</option>
+    </select>
+    <input v-model="checked" type="checkbox" name="" id="">
+    <br>
+
+      <label for="water">물</label>
+      <input v-model="type" value="water" type="radio" name="1" id="water"> <br>
+      <label for="fire">불</label>
+      <input v-model="type" value="fire" type="radio" name="2" id="fire"> <br>
+      <label for="grass">풀</label>
+      <input v-model="type" value="grass" type="radio" name="3" id="grass"> <br>
+
+  </div>
+
+
+  <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        message: '',
+        number: 0,
+        select: '',
+        checked: true,
+        type: '',
+      },
+    })
+  </script>
+</body>
+
+</html>

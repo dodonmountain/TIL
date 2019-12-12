@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id='app'>
+    <button v-on:click="dogmake()">댕댕이 소환</button>
+    <button v-on:click="catmake()">야옹이 소환</button>
+    <h1>행복지수: {{ happiness }}</h1>
+    <img v-for="image in images" v-bind:src="image" width="192px" height="108px" alt="">
+    
+  </div>
+
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script>
+    const app = new Vue({
+      el: "#app",
+      data: {
+        happiness: 0,
+        images: [],
+      },
+      methods: {
+        dogmake: function () {
+          axios.get(`https://dog.ceo/api/breeds/image/random`)
+            .then(response => {
+              this.images.push(response.data.message)
+              this.happiness++
+            })
+        },
+        catmake: function () {
+          axios.get('https://api.thecatapi.com/v1/images/search?size=full')
+            .then(response => {
+              this.images.push(response.data[0].url)
+              this.happiness++
+            })
+        }
+      },
+    })
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <title>todolist.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Josefin+Slab|Nanum+Myeongjo&display=swap" rel="stylesheet">
+  <style>
+    .timer {
+      font-size: 5rem;
+      background: -webkit-linear-gradient(rgb(8, 180, 85), rgb(16, 103, 216));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .ctimer {
+      font-size: 4rem;
+      background: -webkit-linear-gradient(rgb(8, 180, 85), rgb(16, 103, 216), #2f2f2f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .onlybg {
+      background: -webkit-linear-gradient(rgb(8, 180, 85), rgb(16, 103, 216));
+    }
+    body {
+      background: -webkit-linear-gradient(rgba(255, 151, 151, 0.74), rgb(170, 155, 255));
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font: #2f2f2f;
+    }
+    .clock {
+      background: transparent;
+      position: fixed;
+      top:0;
+      left:0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" style="height:fit-content;margin-bottom:50px;margin-top:15px" class="container text-center border shadow bg-white">
+    <img v-bind:src="logo" alt="" width="200px">
+    <div class="clock m-3">
+      <h3 class="ctimer">{{ time }}</h3>
+    </div>
+    <h1 style="font-family: 'Josefin Slab', serif; font-size:8rem;" class="timer">ToDo List</h1>
+    <button @click="allDone" class="btn btn-lg btn-outline-success mr-5">모두 완료!</button>
+    <button @click="deleteDone" class="btn btn-lg btn-outline-danger ml-5">완료 삭제!</button>
+
+
+    <input type="text" style="height:3rem;font-size: 2rem;" v-model="newTodo"
+      class="input-group input-group-lg form-text text-center border bg-white text-muted my-3"
+      placeholder="오늘의 할일을 입력하세요!" v-on:keyup.enter="submit()"> <br>
+
+
+    <select v-model='status' class="custom-select mb-2">
+      <option value="all">모두보기</option>
+      <option value="active">할일</option>
+      <option value="complete">완료</option>
+    </select>
+
+
+    <table class="table table">
+      <tr v-for="todo in todosByStatus" :key="todo.id" class="mt-3">
+        <td :class="{'bg-success text-white m-0 p-0': todo.completed, 'border m-0 p-0': !todo.completed}">
+          <p class="text-center py-1">{{ todo.content }}</p>
+        </td>
+        <td class="btn" data-toggle="ck">
+          <input class="custom-checkbox" type="checkbox" id='ck' v-model="todo.completed">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <!-- 
+  디렉티브
+  v-for : 반복문
+  v-if : 조건문
+  같이 작성을 하게 되면, 매 반복에 if를 체크
+-->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <script>
+    const todoStorage = {
+      fetch() { // 가져오는 작업 (JSON => object 리턴)
+        return JSON.parse(localStorage.getItem('vue-todo')) || []
+      },
+      set(todos) { // 로컬 스토리지에 저장하는 작업 (object => JSON)
+        localStorage.setItem('vue-todo', JSON.stringify(todos))
+      },
+    }
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        time: '',
+        
+        status: 'all',
+
+        newTodo: '',
+
+
+        logo: 'https://d12y7sg0iam4lc.cloudfront.net/s/img/marketing/top-todo-app/to-do-list.png',
+
+
+        todos: [],
+
+
+      },
+      methods: {
+        dateMethods() {
+          return new Date()
+        },
+
+        updateTime() {
+          const date = new Date()
+          this.time = `${date.toTimeString().slice(0, 8)}`
+        },
+
+        toggleCompleted(todo) {
+          todo.completed = !todo.completed
+        },
+
+
+        submit() {
+          this.todos.push({
+            id: Date.now(),
+            content: this.newTodo,
+            completed: false
+          })
+          this.newTodo = ''
+        },
+
+
+        allDone() {
+          let flag = true
+          for (var i = 0; i < this.todos.length; i++) {
+            if (this.todos[i].completed === false) {
+              flag = false
+              break
+            }
+          }
+          if (flag===false) {
+            this.todos.forEach(element => {
+              element.completed = true
+            })
+          } else {
+            this.todos.forEach(element => {
+              element.completed = false
+            })
+          }
+          console.log(flag)
+        },
+
+        deleteDone() {
+          this.todos = this.todos.filter(todo => {
+            return !todo.completed
+          })
+        },
+      },
+      computed: {
+        todosByStatus() {
+          console.log('!!!!!!!!!!!')
+          if (this.status === 'active') {
+            return this.todos.filter(todo => !todo.completed)
+          } else if (this.status === 'complete') {
+            return this.todos.filter(todo => todo.completed)
+          } else {
+            return this.todos
+          }
+        },
+
+        dateComputed() {
+          return new Date()
+        }
+      },
+      watch: { // 특정 데이터의 변경을 추적, 변경시 반응
+        todos: {
+          handler: function() {
+            todoStorage.set(this.todos)
+          },
+          deep: true, // 원소 내용의 변경까지도 추적
+        }
+      },
+      mounted: function(){
+        console.log('아침이 되었습니다.')
+        // 현재 시간
+        this.updateTime()
+        this.todos = todoStorage.fetch()
+        this.$options.myInterval = setInterval(this.updateTime, 500)
+      },
+      beforeDestroy() {
+        clearInterval(this.$options.myInterval)
+      },
+    })
+  </script>
+</body>
+
+</html>

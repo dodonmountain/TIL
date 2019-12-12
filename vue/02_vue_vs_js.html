@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <title>vue.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <input type="text" v-model="message">
+    <p>
+      {{ message }} - {{ count }}
+    </p>
+  </div>
+
+
+  <script>
+    const app = new Vue({
+      el: '#app', // 조작할 DOM, vue object(VM) 마운트 (연결)
+                  //class, id 선택자를 바탕으로 DOM을 설정
+      // data : 항상 기본 오브젝트
+      data: {
+        message: '', // String
+        count:0 // Integer, Array, object ... 
+      },
+      methods: {
+        plus: function() {
+          this.count++
+        },
+        minus: function() {
+          this.count--
+        }
+        
+      }
+    })
+  </script>
+</body>
+
+</html>

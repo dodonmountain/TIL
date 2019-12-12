@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app" class="container">
+    <h1>Lee's Todo</h1>
+    <todo-list category="취업준비"></todo-list>
+    <todo-list category="싸피"></todo-list>
+    <todo-list category="개인"></todo-list>
+  </div>
+  <script>
+    // 전역 컴포넌트 선언부
+    Vue.component('todo-list', {
+      template: `<div class="todo-list">
+      <h2 class="badge badge-pill btn-info btn-block">{{ category }}</h2>
+      <hr>
+    <input class="text-dark bg-light navbar-text" v-model="newTodo" type="text"> 
+    <button class="btn btn-sm btn-outline-primary" @click="addTodo">추가</button><br>
+    <li v-for="todo in todos" :key="todo.id">
+      {{ todo.content }}
+      <button @click="removeTodo(todo.id)">삭제</button>
+    </li>
+    <hr>
+  </div>
+
+  `,
+      props: {
+        category: {
+          type: String,
+          required: true,
+        }
+        },
+      data: function () {
+        return {
+          todos: [],
+          newTodo: ''
+        }
+      },
+      methods: {
+        addTodo() {
+          this.todos.push({
+            id: Date.now(),
+            content: this.newTodo
+          })
+          this.newTodo = ''
+        },
+        removeTodo(removeTodoId) {
+          this.todos = this.todos.filter(todo => {
+            return removeTodoId !== todo.id
+          })
+        }
+      }
+    })
+  </script>
+
+
+  <script>
+    const app = new Vue({
+      el: '#app'
+    })
+  </script>
+</body>
+
+</html>
